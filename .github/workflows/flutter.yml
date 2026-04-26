@@ -25,7 +25,13 @@ jobs:
           flutter-version: '3.27.0'
           channel: 'stable'
 
-      - name: Clean project
+      - name: Clear Gradle cache (fix v1 embedding)
+        run: |
+          rm -rf ~/.gradle/caches/
+          rm -rf android/.gradle
+          rm -rf android/app/build
+
+      - name: Clean Flutter build
         run: flutter clean
 
       - name: Install dependencies
