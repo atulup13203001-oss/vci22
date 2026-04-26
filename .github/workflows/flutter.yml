@@ -19,14 +19,14 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Setup Flutter (3.19.0 – stable, supports v1 embedding)
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
+          flutter-version: '3.24.0'
           channel: 'stable'
-          cache: false   # Disable cache to avoid version mismatch
+          cache: false
 
-      - name: Clear all caches
+      - name: Clear caches
         run: |
           rm -rf ~/.gradle/caches/
           rm -rf android/.gradle
