@@ -16,6 +16,7 @@ jobs:
         with:
           flutter-version: '3.27.0'   # Updated from 3.24.0 to 3.27.0 (Dart 3.6.0)
           channel: 'stable'
+      - run: flutter clean
       - run: flutter pub get
       - run: flutter build apk --release
       - uses: actions/upload-artifact@v4
