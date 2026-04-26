@@ -26,17 +26,31 @@ jobs:
           channel: 'stable'
           cache: false
 
-      - name: Clear caches
+      - name: Clean everything
         run: |
+          flutter clean
           rm -rf ~/.gradle/caches/
+          rm -rf ~/.pub-cache
           rm -rf android/.gradle
           rm -rf android/app/build
-          rm -rf $HOME/.pub-cache
+          rm -rf android/app/src/main/java/io/flutter
 
-      - name: Fix v1 embedding
+      - name: Fix AndroidManifest.xml
         run: |
-          sed -i 's/io.flutter.app.FlutterActivity/io.flutter.embedding.android.FlutterActivity/g' android/app/src/main/AndroidManifest.xml || true
-          rm -rf android/app/src/main/java/io/flutter/app
+          # Ensure flutterEmbedding is set to 2
+          sed -i 's/flutterEmbedding" android:value="[0-9]"/flutterEmbedding" android:value="2"/g' android/app/src/main/AndroidManifest.xml
+          # Remove any reference to FlutterApplication
+          sed -i 's/android:name="io.flutter.app.FlutterApplication"//g' android/app/src/main/AndroidManifest.xml
+          # Fix activity reference
+          sed -i 's/io.flutter.app.FlutterActivity/io.flutter.embedding.android.FlutterActivity/g' android/app/src/main/AndroidManifest.xml
+
+      - name: Force v2 embedding in build.gradle
+        run: |
+          echo 'android {
+              defaultConfig {
+                  manifestPlaceholders = [flutterEmbedding: "2"]
+              }
+          }' >> android/app/build.gradle
 
       - name: Install dependencies
         run: flutter pub get
