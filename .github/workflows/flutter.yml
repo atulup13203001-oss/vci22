@@ -33,7 +33,6 @@ jobs:
           rm -rf android/app/build
           rm -rf $HOME/.pub-cache
 
-      # ✅ Add the v1 embedding fix HERE
       - name: Fix v1 embedding
         run: |
           sed -i 's/io.flutter.app.FlutterActivity/io.flutter.embedding.android.FlutterActivity/g' android/app/src/main/AndroidManifest.xml || true
