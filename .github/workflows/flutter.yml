@@ -26,31 +26,29 @@ jobs:
           channel: 'stable'
           cache: false
 
-      - name: Clean everything
-        run: |
-          flutter clean
-          rm -rf ~/.gradle/caches/
-          rm -rf ~/.pub-cache
-          rm -rf android/.gradle
-          rm -rf android/app/build
-          rm -rf android/app/src/main/java/io/flutter
+      # Delete old android folder that may contain v1 embedding
+      - name: Delete old android folder
+        run: rm -rf android
 
-      - name: Fix AndroidManifest.xml
-        run: |
-          # Ensure flutterEmbedding is set to 2
-          sed -i 's/flutterEmbedding" android:value="[0-9]"/flutterEmbedding" android:value="2"/g' android/app/src/main/AndroidManifest.xml
-          # Remove any reference to FlutterApplication
-          sed -i 's/android:name="io.flutter.app.FlutterApplication"//g' android/app/src/main/AndroidManifest.xml
-          # Fix activity reference
-          sed -i 's/io.flutter.app.FlutterActivity/io.flutter.embedding.android.FlutterActivity/g' android/app/src/main/AndroidManifest.xml
+      # Regenerate fresh android folder with v2 embedding
+      - name: Regenerate android folder
+        run: flutter create --platforms=android --project-name=vimal_coaching_institute .
 
-      - name: Force v2 embedding in build.gradle
+      # Restore google-services.json (must be committed in repo)
+      - name: Restore google-services.json
         run: |
-          echo 'android {
-              defaultConfig {
-                  manifestPlaceholders = [flutterEmbedding: "2"]
-              }
-          }' >> android/app/build.gradle
+          if [ -f google-services.json ]; then
+            cp google-services.json android/app/
+          else
+            echo "google-services.json not found in repo root"
+            exit 1
+          fi
+
+      # Add multidex support
+      - name: Add multidex
+        run: |
+          sed -i '/defaultConfig {/a \            multiDexEnabled true' android/app/build.gradle
+          echo -e '\ndependencies {\n    implementation "androidx.multidex:multidex:2.0.1"\n}' >> android/app/build.gradle
 
       - name: Install dependencies
         run: flutter pub get
