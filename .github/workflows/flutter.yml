@@ -2,7 +2,7 @@ name: Build APK
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -19,18 +19,14 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Setup Flutter
+      - name: Setup Flutter (3.19.0 – stable, supports v1 embedding)
         uses: subosito/flutter-action@v2
         with:
-          # Use a known working version before v1 embedding was removed
-          flutter-version: '3.22.4'
-          # Use a specific channel to ensure stability
+          flutter-version: '3.19.0'
           channel: 'stable'
-          # Force cache invalidation to avoid version mismatch errors
-          cache-key: 'flutter-3.22.4-cache-key'
+          cache: false   # Disable cache to avoid version mismatch
 
-      # Clear all possible cached references to the v1 embedding
-      - name: Clear Gradle and Pub Cache
+      - name: Clear all caches
         run: |
           rm -rf ~/.gradle/caches/
           rm -rf android/.gradle
