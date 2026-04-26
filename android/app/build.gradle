@@ -26,10 +26,17 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'com.google.gms.google-services'
 
+
+
+
+
 android {
     namespace "com.vimal.coaching.institute"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
+
+    // Add this section
+    compileSdk 34  // Or higher, matching your Flutter SDK requirements
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -44,14 +51,14 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-defaultConfig {
-    applicationId "com.vimal.coaching.institute"
-    minSdkVersion flutter.minSdkVersion
-    targetSdkVersion flutter.targetSdkVersion
-    versionCode flutterVersionCode.toInteger()
-    versionName flutterVersionName
-    multiDexEnabled true
-}
+    defaultConfig {
+        applicationId "com.vimal.coaching.institute"
+        minSdkVersion 21  // Ensure this is at least 21 for v2 embedding
+        targetSdkVersion 34
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        multiDexEnabled true
+    }
 
     buildTypes {
         release {
@@ -63,14 +70,11 @@ defaultConfig {
     }
 }
 
-flutter {
-    source '../..'
-}
 
-dependencies {
-    implementation platform('com.google.firebase:firebase-bom:32.7.0')
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-auth'
-    implementation 'com.google.firebase:firebase-firestore'
-    implementation 'com.google.firebase:firebase-storage'
+
+
+
+
+
+
 }
